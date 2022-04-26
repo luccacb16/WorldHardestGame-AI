@@ -76,6 +76,9 @@ def main(genomes, config):
     global ganharam
     ganharam = 0
 
+    global tempo_max
+    tempo_max = 8
+
     for genomes_id, g in genomes:
         net = neat.nn.FeedForwardNetwork.create(g, config)
 
@@ -156,14 +159,17 @@ def main(genomes, config):
                 new_gen(nets, ge, x_c, player_list, player, area, -2.75) # -2.75 de fitness
 
             # A cada X gerações, aumenta o tempo de jogo em Y
-            tempo_max = 8
-
             if GEN % 15 == 0 and GEN > 0:
                 tempo_max += 4
 
             # Se exceder o tempo máximo, começa uma nova geração
-            if tempo > tempo_max:
+            if tempo >= tempo_max:
                 new_gen(nets, ge, x_c, player_list, player, area, 0)
+
+            # Elima players que estiverem no spawn depois de 2.5 segundos
+            if tempo >= 2.5:
+                if player.getx() <= 162 and player.gety() <= 371:
+                    new_gen(nets, ge, x_c, player_list, player, area, -5) # -5 de fitness
 
             # Colisão com área que ganha
             if player.player_rect.colliderect(area.win_rect):
