@@ -1,2 +1,5 @@
 # Jogo mais Difícil do Mundo AI
-AI que joga a primeira fase do WHG. Feita utilizando o algoritmo NEAT através da biblioteca NEAT Python e Pygame
+AI que joga a primeira fase do WHG  
+Feita utilizando o algoritmo NEAT através da biblioteca NEAT Python e Pygame  
+
+Leva em torno de 30 gerações para chegar à área de vitória
