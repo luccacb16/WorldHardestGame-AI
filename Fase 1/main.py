@@ -123,7 +123,7 @@ def main(genomes, config):
                 bola1.getx(), bola1.gety(),
                 bola2.getx(), bola2.gety(),
                 bola3.getx(), bola3.gety(),
-                bola4.getx(), bola4.gety(),)
+                bola4.getx(), bola4.gety())
             )
 
             # Movimentos baseado no output (up, down, right)
@@ -153,31 +153,26 @@ def main(genomes, config):
                     player.colidiu = True
 
             if player.colidiu:
-                ge[x_c].fitness -= 2.75 # Perde fitness por encostar na bola
-
-                new_gen(nets, ge, x_c, player_list, player, area)
+                new_gen(nets, ge, x_c, player_list, player, area, -2.75) # -2.75 de fitness
 
             # A cada X gerações, aumenta o tempo de jogo em Y
             tempo_max = 8
 
-            if GEN % 15 == 0:
+            if GEN % 15 == 0 and GEN > 0:
                 tempo_max += 4
 
             # Se exceder o tempo máximo, começa uma nova geração
             if tempo > tempo_max:
-
-                new_gen(nets, ge, x_c, player_list, player, area)
+                new_gen(nets, ge, x_c, player_list, player, area, 0)
 
             # Colisão com área que ganha
             if player.player_rect.colliderect(area.win_rect):
-                ge[x_c].fitness += 9999 # Ganha fitness para acabar a evolução
-
                 ganharam += 1
 
                 # Salva o vencedor
                 save_winner(player, nets[player_list.index(player)])
 
-                new_gen(nets, ge, x_c, player_list, player, area)
+                new_gen(nets, ge, x_c, player_list, player, area, 9999) # 9999 fitness (para a evolução)
                 
         # Movimentação Bola
         for bola in lista_bolas:
@@ -188,18 +183,20 @@ def main(genomes, config):
             draw_window(win, mapa, lista_bolas, player_list) # Desenha tudo
 
 # NOVA GERAÇÃO
-def new_gen(nets, ge, x_c, player_list, player, area):
+def new_gen(nets, ge, x_c, player_list, player, area, valor):
     global bestDist
 
     # Calcula a distância da área de vitória e soma o inverso ao fitness
     player.dist = math.sqrt( (area.getx() - player.getx())**2 + (area.gety() - player.gety())**2 )
+    ge[x_c].fitness = 1 / player.dist
 
-    # Se a distância do player for maior do que a bestDist, se torna a nova bestDist
+    # Compensa o fitness pelo valor passado para a função
+    ge[x_c].fitness += valor
+
+    # Se a distância do player for maior do que a bestDist, se torna a nova bestDist e ganha 5.5 de fitness
     if player.dist < bestDist:
+        ge[x_c].fitness += 5.5
         bestDist = player.dist
-
-    # Mostra a melhor distância
-    print("bestDist: " + str(bestDist))
 
     # Remove o player da lista
     nets.pop(player_list.index(player))
