@@ -272,7 +272,7 @@ def run(config_file):
 
 	winner = p.run(main, 9999)
 
-	with open('winner13_06', 'wb') as f:
+	with open('winner.pickle', 'wb') as f:
 		pickle.dump(winner, f)
 
 	print('\nBest genome:\n{!s}'.format(winner))
