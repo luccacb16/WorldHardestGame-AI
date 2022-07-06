@@ -13,12 +13,14 @@ class Player:
 
 		self.width = 30
 		self.height = 30
+		
+		self.dist = 999999
+		self.fitness = 0
 
 		self.pegouMoeda = False
 		self.colidiu = False
 		self.timeout = False
 		self.win = False
-		self.dist = 999999
 
 		self.surface = pygame.image.load('img/player.png').convert_alpha()
 		self.surface = pygame.transform.scale(self.surface, (self.width, self.height))
