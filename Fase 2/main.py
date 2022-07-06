@@ -252,7 +252,7 @@ def main(genomes, config):
 # NOVA GERAÇÃO
 def removeplayer(nets, ge, x, players, player, valor):
 
-	ge[x].fitness = 1000 / player.dist + valor
+	ge[x].fitness = player.fitness + 1000 / player.dist + valor
 
 	# Remove player do jogo
 	if player in players:
