@@ -65,6 +65,7 @@ class Player:
 	def colisaoMoeda(self, moeda):
 		if self.rect.colliderect(moeda.rect):
 			self.pegouMoeda = True
+			self.fitness = 10
 
 	def colisaoWin(self, area):
 		if self.rect.colliderect(area.rect):
