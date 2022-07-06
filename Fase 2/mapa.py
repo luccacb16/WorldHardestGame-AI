@@ -42,8 +42,8 @@ class Mapa:
 		self.parede4 = Parede(184, 40, 6, 102, 'e')
 		self.parede5 = Parede(184, 40, 582, 6, 's')
 
-		self.parede6 = Parede(760, 40, 6, 102, 'd')
-		self.parede7 = Parede(760, 232, 6, 102, 'd')
+		self.parede6 = Parede(759, 40, 6, 102, 'd')
+		self.parede7 = Parede(759, 232, 6, 102, 'd')
 		self.parede8 = Parede(184, 328, 582, 6, 'i')
 		self.parede9 = Parede(184, 232, 6, 102, 'e')
 

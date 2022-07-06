@@ -83,7 +83,6 @@ def main(genomes, config):
 	GEN += 1
 	WIN_ON = True
 	tempo_max = 8
-	atw = 0
 	ganharam = 0
 
 	# Dá mais X segundos de jogo a cada Y gerações
@@ -215,32 +214,34 @@ def main(genomes, config):
 
 			# Timeout
 			if player.timeout:
-				removeplayer(nets, ge, x, players, player, 0)
+				if player in players:
+					removeplayer(nets, ge, x, players, player, 0)
 
 			# Colisão com as bolas	
 			if player.colidiu:
-				removeplayer(nets, ge, x, players, player, -5)
+				if player in players:
+					removeplayer(nets, ge, x, players, player, -5)
 
 			# Passar da moeda sem pegar
 			if player.getx() >= moeda.getx() and not player.pegouMoeda:
-				removeplayer(nets, ge, x, players, player, -9)
+				if player in players:
+					removeplayer(nets, ge, x, players, player, -9)
 
 			# Ganhou
 			if player.win:
 				if atw >= 3:
-					removeplayer(nets, ge, x, players, player, 99999999)
+					if player in players:
+						removeplayer(nets, ge, x, players, player, 99999999)
 				else:
 					ganharam += 1
 					atw += 1
 
 					print("Ganhou!")
-					removeplayer(nets, ge, x, players, player, 1000)
+					if player in players:
+						removeplayer(nets, ge, x, players, player, 1000)
 
 			# Por tempo e posição
 			if tempo >= 2.5:
-				if player.getx() <= player.og_x: # Parado
-					removeplayer(nets, ge, x, players, player, -15)
-
 				if player in players:
 					if player.getx() <= 186: # Dentro do spawn
 						removeplayer(nets, ge, x, players, player, -15)
@@ -252,10 +253,16 @@ def main(genomes, config):
 # NOVA GERAÇÃO
 def removeplayer(nets, ge, x, players, player, valor):
 
+<<<<<<< Updated upstream
 	ge[x].fitness = player.fitness + 1000 / player.dist + valor
 
 	# Remove player do jogo
+=======
+>>>>>>> Stashed changes
 	if player in players:
+		ge[x].fitness += player.fitness + 1000 / player.dist + valor
+
+		# Remove player do jogo
 		nets.pop(players.index(player))
 		ge.pop(players.index(player))
 		players.pop(players.index(player))

@@ -18,6 +18,10 @@ class Player:
 		self.dist = 999999
 		self.fitness = 0
 
+		self.target = self
+		self.dist = 999999
+		self.fitness = 0
+
 		self.pegouMoeda = False
 		self.colidiu = False
 		self.timeout = False
@@ -56,7 +60,7 @@ class Player:
 				if parede.index == 'e':
 					self.x += self.xvel
 
-				if parede == 'd':
+				if parede.index == 'd':
 					self.x -= self.xvel
 
 	def colisaoBola(self, bola):
@@ -66,7 +70,11 @@ class Player:
 	def colisaoMoeda(self, moeda):
 		if self.rect.colliderect(moeda.rect):
 			self.pegouMoeda = True
+<<<<<<< Updated upstream
 			self.fitness = 10
+=======
+			self.fitness = 30
+>>>>>>> Stashed changes
 
 	def colisaoWin(self, area):
 		if self.rect.colliderect(area.rect):
@@ -85,9 +93,15 @@ class Player:
 
 		# Desenha as linhas
 		pygame.draw.line(win, color, (self.getx(), self.gety()), (self.target.getx(), self.target.gety()), 2)
+<<<<<<< Updated upstream
 	
 		self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
 		
+=======
+
+		self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
+
+>>>>>>> Stashed changes
 		# Escreve as distâncias
 		if switch:
 			Xm = ((self.getx() + self.target.getx()) / 2) - 15
