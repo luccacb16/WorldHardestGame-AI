@@ -76,20 +76,20 @@ class Player:
 
 		# Define o target
 		if not self.pegouMoeda:
-			target = moeda
+			self.target = moeda
 			color = GREEN
 		else:
-			target = area
+			self.target = area
 			color = BLUE
 
 		# Desenha as linhas
-		pygame.draw.line(win, color, (self.getx(), self.gety()), (target.getx(), target.gety()), 2)
+		pygame.draw.line(win, color, (self.getx(), self.gety()), (self.target.getx(), self.target.gety()), 2)
 
 		# Escreve as distâncias
 		if switch:
-			self.dist = math.sqrt((self.getx() - target.getx())**2 + (self.gety() - target.gety())**2)
-			Xm = ((self.getx() + target.getx()) / 2) - 15
-			Ym = ((self.gety() + target.gety()) / 2) - 15
+			self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
+			Xm = ((self.getx() + self.target.getx()) / 2) - 15
+			Ym = ((self.gety() + self.target.gety()) / 2) - 15
 
 			dist_text = DIST_FONT.render("d: " + "{:.2f}".format(self.dist), 1, (0, 0, 0, 191))
 			win.blit(dist_text, (Xm, Ym))
