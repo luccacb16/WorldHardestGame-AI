@@ -85,10 +85,11 @@ class Player:
 
 		# Desenha as linhas
 		pygame.draw.line(win, color, (self.getx(), self.gety()), (self.target.getx(), self.target.gety()), 2)
-
+	
+		self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
+		
 		# Escreve as distâncias
 		if switch:
-			self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
 			Xm = ((self.getx() + self.target.getx()) / 2) - 15
 			Ym = ((self.gety() + self.target.gety()) / 2) - 15
 
