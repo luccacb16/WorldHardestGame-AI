@@ -192,7 +192,7 @@ def main(genomes, config):
 			outputs = nets[players.index(player)].activate( 
 				( 
 				player.getx(), player.gety(),
-				area.getx(), area.gety(),
+				abs(player.target.getx() - player.getx()), abs(player.target.gety() - player.gety()),
 				abs(bolas[bola1_ind].getx() - player.getx()), abs(bolas[bola1_ind].gety() - player.gety()),
 				abs(bolas[bola2_ind].getx() - player.getx()), abs(bolas[bola2_ind].gety() - player.gety())
 				)
