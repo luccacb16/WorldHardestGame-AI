@@ -14,6 +14,7 @@ class Player:
 		self.width = 30
 		self.height = 30
 		
+		self.target = self
 		self.dist = 999999
 		self.fitness = 0
 
