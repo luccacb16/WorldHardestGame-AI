@@ -199,15 +199,15 @@ def main(genomes, config):
 			)
 
 			# Movimentos baseado no output (up, down, right)
-			if max(outputs[0], outputs[1], outputs[2]) == outputs[0]:
+			if max(outputs) == outputs[0]:
 				if outputs[0] > 0.5:
 					player.move_up()
 
-			if max(outputs[0], outputs[1], outputs[2]) == outputs[1]:
+			if max(outputs) == outputs[1]:
 				if outputs[1] > 0.5:
 					player.move_down()
 
-			if max(outputs[0], outputs[1], outputs[2]) == outputs[2]:
+			if max(outputs) == outputs[2]:
 				if outputs[2] > 0.5:
 					player.move_right()
 
