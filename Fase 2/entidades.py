@@ -6,17 +6,13 @@ from mapa import *
 # PLAYER
 class Player:
 	def __init__(self):
-		self.x = self.og_x = 118
-		self.y = self.og_y = 185
+		self.x = 118
+		self.y = 185
 		self.xvel = 4
 		self.yvel = 4
 
 		self.width = 30
 		self.height = 30
-		
-		self.target = self
-		self.dist = 999999
-		self.fitness = 0
 
 		self.target = self
 		self.dist = 999999
@@ -70,11 +66,7 @@ class Player:
 	def colisaoMoeda(self, moeda):
 		if self.rect.colliderect(moeda.rect):
 			self.pegouMoeda = True
-<<<<<<< Updated upstream
-			self.fitness = 10
-=======
 			self.fitness = 30
->>>>>>> Stashed changes
 
 	def colisaoWin(self, area):
 		if self.rect.colliderect(area.rect):
@@ -93,15 +85,9 @@ class Player:
 
 		# Desenha as linhas
 		pygame.draw.line(win, color, (self.getx(), self.gety()), (self.target.getx(), self.target.gety()), 2)
-<<<<<<< Updated upstream
-	
-		self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
-		
-=======
 
 		self.dist = math.sqrt((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
 
->>>>>>> Stashed changes
 		# Escreve as distâncias
 		if switch:
 			Xm = ((self.getx() + self.target.getx()) / 2) - 15
@@ -119,8 +105,8 @@ class Player:
 # BOLA
 class Bola:
 	def __init__(self, y, tipo):
-		self.x = self.og_x = 212 + (44 * (tipo-1) + 4.5*(tipo-2))
-		self.y = self.og_y = y
+		self.x = 212 + (44 * (tipo-1) + 4.5*(tipo-2))
+		self.y = y
 		self.vel = 3.5
 		self.tipo = tipo
 		self.count = 0
@@ -155,8 +141,8 @@ class Bola:
 # MOEDA
 class Moeda:
 	def __init__(self):
-		self.x = self.og_x = 474
-		self.y = self.og_y = 186
+		self.x = 474
+		self.y = 186
 
 		self.width = 24
 		self.height = 24
