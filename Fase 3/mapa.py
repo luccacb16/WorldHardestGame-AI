@@ -34,10 +34,7 @@ class Parede:
         self.height = height
         self.index = index
 
-        #self.surface = pygame.Surface((self.width, self.height))
-        
-        self.surface = pygame.image.load('img/parede.png').convert_alpha()
-        self.surface = pygame.transform.scale(self.surface, (self.width, self.height))
+        self.surface = pygame.Surface((self.width, self.height))
         self.rect = self.surface.get_rect(topleft = (self.x, self.y))
 
     def draw(self, win):
