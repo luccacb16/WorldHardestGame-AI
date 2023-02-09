@@ -20,12 +20,6 @@ class Win:
         self.surface = pygame.Surface((self.width, self.height))
         self.rect = self.surface.get_rect(topleft = (self.x, self.y))
 
-    def getx(self):
-        return self.x
-
-    def gety(self):
-        return self.y
-
 class Parede:
     def __init__(self, x, y, width, height, index):
         self.x = x

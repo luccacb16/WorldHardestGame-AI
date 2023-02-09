@@ -48,7 +48,7 @@ def draw_window(win, bolas, moedas, players, area):
 	# Vivos:
     vivos_text = VIVOS_FONT.render("Vivos: " + str(len(players)), 1, BLACK)
     win.blit(vivos_text, (30, 60))
-
+    '''
 	# DIREITA
 
 	# T
@@ -83,7 +83,7 @@ def draw_window(win, bolas, moedas, players, area):
 
     moeda3_text = MOEDASPEGAS_FONT.render("M3: " + str(len(vivosmoeda3)), 1, YELLOW)
     win.blit(moeda3_text, (30, 190))
-
+    '''
     pygame.display.flip()
 
 # -------------------------------------------------------------------------------------------------------
@@ -98,14 +98,8 @@ def main(genomes, config):
 
     GEN += 1
     WIN_ON = True
-    tempo_max = 10
+    tempo_max = 25
     ganharam = 0
-
-	# Tempo Max
-    if GEN % 100 == 0 and GEN > 0:
-        tempo_max += 2
-    if GEN >= 500:
-        tempo_max = 20
 
     ''' Objetos '''
 
@@ -193,49 +187,39 @@ def main(genomes, config):
         for b in bolas:
             b.move()
         
-        for x, player in enumerate(players):   
+        for x, player in enumerate(players):  
 
-            for b in bolas:
-                player.colisaoBola(b)
+            # Verificadores de colisão
 
+            player.colisaoBolas(bolas)
             player.colisaoMoedas(moedas)
             player.colisaoParedes(mapa)
             player.colisaoWin(area)
 
-            if tempo >= tempo_max:
-                player.timeout = True
-
             ''' Neural Network '''
 
-            # Determina a distância do player à cada barra e escolhe a menor para fornecer para a NN
-            b0 = np.array([bola0.getx(), bola0.gety()])
+            # Define a bola mais próxima
+            dist = []
+            for b in bolas:
+                dist.append(math.dist([b.x, b.y], [player.x, player.y]))
+            bolaperto = bolas[dist.index(min(dist))]
 
-            b1 = np.array([bola5.getx(), bola5.gety()])
-            b2 = np.array([bola10.getx(), bola10.gety()])
-            b3 = np.array([bola15.getx(), bola15.gety()])
-            b4 = np.array([bola20.getx(), bola20.gety()])
-            p = np.array([player.getx(), player.gety()])
-
-            #distb = np.cross(b0-b1, p-b1) / np.linalg.norm(b0-b1)
-            distb1 = np.cross(b0-b1, p-b1) / np.linalg.norm(b0-b1) # d(Player | b0b1)
-            distb2 = np.cross(b0-b2, p-b2) / np.linalg.norm(b0-b2) # d(Player | b0b2)
-            distb3 = np.cross(b0-b3, p-b3) / np.linalg.norm(b0-b3) # d(Player | b0b3)
-            distb4 = np.cross(b0-b4, p-b4) / np.linalg.norm(b0-b4) # d(Player | b0b4)
-
-            dists = [distb1, distb2, distb3, distb4]
-            
-            barra = min(dists)
+            # Define a parede mais próxima
+            dist2 = []
+            for pr in mapa.paredes:
+                dist2.append(math.dist([pr.x, pr.y], [player.x, player.y]))
+            paredeperto = mapa.paredes[dist2.index(min(dist2))]
 
             # Inputs da NN
             outputs = nets[players.index(player)].activate(
                 (
 
-				player.getx(), player.gety(), # Posição do player
+				player.x, player.y, # Posição do player
 
-                barra, # Distância do player às barras
+                bolaperto.x, bolaperto.y, # Bola mais próxima
+                paredeperto.x, paredeperto.y, # Parede mais próxima
 
-                abs(player.target.getx() - player.getx()), 
-                abs(player.target.gety() - player.gety())
+                player.target.x, player.target.y, # Target
                 )
 			)
 
@@ -258,30 +242,32 @@ def main(genomes, config):
 
             ''' Fitness '''
 
-            if player in players:
-                if player.timeout:
-                    removeplayer(nets, ge, x, players, player, 0)
-
-            if player in players:
-                if player.colidiu:
-                    removeplayer(nets, ge, x, players, player, -2.5) # -2.5
+            # Começa geração nova quando o tempo acaba
+            if tempo >= tempo_max:
+                removeplayer(nets, ge, x, players, player, 0) 
             
-            if player in players:
-                if player.win:
-                    if atw >= 5:
-                        removeplayer(nets, ge, x, players, player, 99999999)
-                    else:
-                        ganharam += 1
-                        atw += 1
+            # Penaliza player que colidiu com alguma bola
+            if player.colidiu:
+                removeplayer(nets, ge, x, players, player, -2.5) # -2.5
+            
+            # Penaliza player que colidiu com a parede
+            if player.colidiuP:
+                removeplayer(nets, ge, x, players, player, -7.5) # Condicionamento: não bater na parede
 
-                        print("Ganhou!")
+            # Player vence
+            if player.win:
+                if atw >= 5:
+                    removeplayer(nets, ge, x, players, player, 99999999)
+                else:
+                    removeplayer(nets, ge, x, players, player, 5000)
+                    ganharam += 1
+                    atw += 1
 
-                        removeplayer(nets, ge, x, players, player, 5000)
-
-            if player in players:
-                if tempo >= 1.5:
-                    if player.gety() <= 229:
-                            removeplayer(nets, ge, x, players, player, -10)	
+            # Remover players que após 3 segundos estejam dentro do spawn
+            if tempo >= 3:
+                if player.y <= 229:
+                    removeplayer(nets, ge, x, players, player, -10)	
+        
         if WIN_ON:
             draw_window(win, bolas, moedas, players, area)
 
@@ -293,7 +279,7 @@ def removeplayer(nets, ge, x, players, player, valor):
     if player in players:
         
         # Define o fitness
-        ge[x].fitness += player.fitness + (3000 / player.dist) + valor
+        ge[x].fitness += player.fitness + (1000 / player.dist) + valor
         
 	   # Remove player do jogo
         nets.pop(players.index(player))

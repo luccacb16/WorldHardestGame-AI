@@ -22,7 +22,7 @@ mapa_rect = mapa_surface.get_rect(center = (WIDTH//2, HEIGHT//2))
 GEN = 0
 atw = 0
 
-def draw_window(win, bolas, moeda, players, spawn):
+def draw_window(win, bolas, moeda, players, area):
 	# Janela
 	win.fill(FUNDO)
 	win.blit(mapa_surface, mapa_rect)
@@ -34,7 +34,7 @@ def draw_window(win, bolas, moeda, players, spawn):
 	
 	for p in players:
 		if p in players:
-			p.targetInfo(win, spawn, moeda, True)
+			p.targetInfo(win, area, moeda, False)
 			p.draw(win)
 			
 	moeda.draw(win)
@@ -52,11 +52,11 @@ def draw_window(win, bolas, moeda, players, spawn):
 	win.blit(vivos_text, (30, 60))
 
 	# DIREITA
-
+	
 	# T
 	tempo_text = TEMPO_FONT.render("T: " + str(tempo), 1, BLACK)
 	win.blit(tempo_text, (WIDTH-120, 30))
-
+	'''
 	# W
 	ganharam_text = TEMPO_FONT.render("W: " + str(ganharam), 1, BLACK)
 	win.blit(ganharam_text, (WIDTH-120, 75))
@@ -73,7 +73,7 @@ def draw_window(win, bolas, moeda, players, spawn):
 
 	moedas_text = MOEDASPEGAS_FONT.render("M: " + str(len(vivosmoeda)), 1, YELLOW)
 	win.blit(moedas_text, ((WIDTH-120), 165))
-
+	'''
 	pygame.display.flip()
 
 # -------------------------------------------------------------------------------------------------------
@@ -93,18 +93,12 @@ def main(genomes, config):
 	tempo_max = 10
 	ganharam = 0
 
-	# Tempo Max
-	if GEN % 100 == 0 and GEN > 0:
-		tempo_max += 2
-	if GEN >= 500:
-		tempo_max = 20
-
 	# Objetos
 	mapa = Mapa()
 
 	moeda = Moeda()
 
-	spawn = Win(234, 268, 134, 134)
+	area = Win(234, 268, 134, 134)
 
 	bola1 = Bola(198, 301, 1)
 	bola2 = Bola(198, 232, 2)
@@ -161,27 +155,21 @@ def main(genomes, config):
 		for x, player in enumerate(players):
 
 			# Colisões
-			for b in bolas:
-				player.colisaoBola(b)
-			
+			player.colisaoBolas(bolas)
 			player.colisaoParedes(mapa)
 			player.colisaoMoeda(moeda)
-			player.colisaoWin(spawn)
-
-			# Tempo máximo
-			if tempo >= tempo_max:
-				player.timeout = True
+			player.colisaoWin(area)
 
 			''' Neural Network '''
 
 			# Inputs da NN
 			outputs = nets[players.index(player)].activate( 
 				(
-				player.getx(), player.gety(),
-				abs(player.target.getx() - player.getx()), abs(player.target.gety() - player.gety()),
+				player.x, player.y,
+				player.target.x, player.target.y,
 
-				abs(bola1.getx() - player.getx()), abs(bola1.gety() - player.gety()),
-				abs(bola11.getx() - player.getx()), abs(bola11.gety() - player.gety()),
+				bola1.x, bola1.y,
+				bola11.x, bola11.y,
 				)
 			)
 
@@ -204,46 +192,46 @@ def main(genomes, config):
 
 			''' Fitness '''
 
-			# Timeout
-			if player.timeout:
+			# Tempo máximo
+			if tempo >= tempo_max:
 				removeplayer(nets, ge, x, players, player, 0)
-
+				
 			# Colisão com as bolas
 			if player.colidiu:
 				removeplayer(nets, ge, x, players, player, -5)
 
 			# Ganhou:
 			if player.win:
-				if atw >= 3:
+				if atw >= 10:
 					removeplayer(nets, ge, x, players, player, 99999999)
 				else:
+					removeplayer(nets, ge, x, players, player, 5000)
 					ganharam += 1
 					atw += 1
 
-					print("Ganhou!")
-					removeplayer(nets, ge, x, players, player, 100)
-			
 			# Por tempo e posição
-			if tempo >= tempo_max / 1.25:
-				if player.moeda and player.gety() <= 195: # Pega a moeda e fica parado
+			if tempo >= 6:
+				if player.moeda and player.y <= 195: # Pega a moeda e fica parado
 					removeplayer(nets, ge, x, players, player, -15)
-				
-				if player in players:
-					if player.rect.colliderect(spawn.rect) and not player.moeda: # Dentro do spawn (sem moeda)
-						removeplayer(nets, ge, x, players, player, -15)
+
+			if tempo >= tempo_max / 3:	
+				if player.rect.colliderect(area.rect) and not player.moeda: # Dentro do area (sem moeda)
+					removeplayer(nets, ge, x, players, player, -15)
 
 		if WIN_ON:
-			draw_window(win, bolas, moeda, players, spawn)
+			draw_window(win, bolas, moeda, players, area)
 
 # -------------------------------------------------------------------------------------------------------
 
 # NOVA GERAÇÃO
 def removeplayer(nets, ge, x, players, player, valor):
-
-	ge[x].fitness += player.fitness +  (2500 / player.dist) + valor
-
-	# Remove player do jogo
+	
 	if player in players:
+
+		ge[x].fitness += player.fitness +  (2500 / player.dist) + valor
+
+		# Remove player do jogo
+	
 		nets.pop(players.index(player))
 		ge.pop(players.index(player))
 		players.pop(players.index(player))
@@ -258,7 +246,7 @@ def run(config_file):
 	stats = neat.StatisticsReporter()
 	p.add_reporter(stats)
 
-	winner = p.run(main, 9999)
+	winner = p.run(main, 99999999)
 
 	with open('winner.pickle', 'wb') as f:
 		pickle.dump(winner, f)

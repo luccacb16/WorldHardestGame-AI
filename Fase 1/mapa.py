@@ -1,24 +1,17 @@
 import pygame
 
 from constantes import *
-from player import *
-from bola import *
+from entidades import *
 
 class Win:
-    def __init__(self):
-        self.x = 738
-        self.y = 84
-        self.width = 1
-        self.height = 42
+    def __init__(self, x, y, width, height): 
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
         
-        self.win_surface = pygame.Surface((self.width, self.height))
-        self.win_rect = self.win_surface.get_rect(topleft = (self.x, self.y))
-    
-    def getx(self):
-        return self.x
-
-    def gety(self):
-        return self.y    
+        self.surface = pygame.Surface((self.width, self.height))
+        self.rect = self.surface.get_rect(topleft = (self.x, self.y))   
 
 class Parede:
     def __init__(self, x, y, width, height, index):
@@ -28,19 +21,14 @@ class Parede:
         self.height = height
         self.index = index
 
-        self.parede_surface = pygame.Surface((self.width, self.height))
-        self.parede_rect = self.parede_surface.get_rect(topleft = (self.x, self.y))
+        self.surface = pygame.Surface((self.width, self.height))
+        self.rect = self.surface.get_rect(topleft = (self.x, self.y))
 
     def draw(self, win):
-        win.blit(self.parede_surface, self.parede_rect)
+        win.blit(self.rect, self.rect)
 
 class Mapa:
     def __init__(self):
-        pass
-        self.lista_paredes = []
-        self.lista_rects = []
-    
-    def paredes(self):
         #self.parede = Parede(x, y, width, height, index)
 
         self.parede1 = Parede(15, 78, 6, 294, 'e')
@@ -61,14 +49,8 @@ class Mapa:
         self.parede15 = Parede(735, 126, 6, 245, 'e')
         self.parede16 = Parede(735, 366, 149, 6, 'i')
 
-        self.lista_paredes = [self.parede1, self.parede2, self.parede3, 
+        self.paredes = [self.parede1, self.parede2, self.parede3, 
                             self.parede4, self.parede5, self.parede6,
                             self.parede7, self.parede8, self.parede9,
                             self.parede10, self.parede11, self.parede12,
                             self.parede13, self.parede14, self.parede15, self.parede16]
-        
-        self.lista_rects = [self.parede1.parede_rect, self.parede2.parede_rect, self.parede3.parede_rect, 
-                            self.parede4.parede_rect, self.parede5.parede_rect, self.parede6.parede_rect,
-                            self.parede7.parede_rect, self.parede8.parede_rect, self.parede9.parede_rect,
-                            self.parede10.parede_rect, self.parede11.parede_rect, self.parede12.parede_rect,
-                            self.parede13.parede_rect, self.parede14.parede_rect, self.parede15.parede_rect, self.parede16.parede_rect]

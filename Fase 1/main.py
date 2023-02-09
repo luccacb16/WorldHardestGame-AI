@@ -5,48 +5,42 @@ import os
 import pickle
 import math
 
-# Classes
 from constantes import *
+from entidades import *
 from mapa import *
-from bola import *
-from player import *
-
-''' Save Winner '''
-def save_winner(winner, playerNet):
-    with open("winner.pickle", 'wb') as f:
-        pickle.dump(playerNet, f)
-        f.close
 
 # PYGAME
 pygame.init()
 pygame.display.init()
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jogo mais Difícil do Mundo!")
+pygame.display.set_caption("Jogo mais Difícil do Mundo! (Fase 1)")
 
 mapa_surface = pygame.image.load('img/mapa.png').convert_alpha()
-mapa_rect = mapa_surface.get_rect(center = (WIDTH//2, HEIGHT//2)) 
+mapa_rect = mapa_surface.get_rect(center = (WIDTH//2, HEIGHT//2))
+
+# NEAT
+GEN = 0
+atw = 0
 
 # DRAW WINDOW
-def draw_window(win, mapa, lista_bolas, player_list):
+def draw_window(win, bolas, players, area):
     win.fill(FUNDO)
     win.blit(mapa_surface, mapa_rect)
 
-    for player in player_list:
-        player.draw(win)
-    
-    for bola in lista_bolas:
-        bola.draw(win)
-    
-    mapa.paredes()
-    for p in mapa.lista_paredes:
-        p.draw(win)
+    for b in bolas:
+        b.draw(win)
+
+    for p in players:
+        if p in players:
+            p.draw(win)
+            p.targetInfo(win, area, False)
 
     # Gerações
     score_label = STAT_FONT.render("Gen: " + str(GEN-1), 1, BLACK)
     win.blit(score_label, (30, 10))
 
     # Vivos
-    vivos = VIVOS_FONT.render("Vivos: " + str(len(player_list)), 1, BLACK)
+    vivos = VIVOS_FONT.render("Vivos: " + str(len(players)), 1, BLACK)
     win.blit(vivos, (30, 40))
 
     # Ganharam
@@ -64,47 +58,52 @@ def main(genomes, config):
     # NEAT
     global GEN
     global WIN_ON
-    GEN += 1
-
-    player_list = []
-    nets = []
-    ge = []
-
-    global bestDist
-    bestDist = 99999
-
-    global ganharam
-    ganharam = 0
-
+    global tempo
     global tempo_max
-    tempo_max = 8
+    global ganharam
+    global atw
 
-    for genomes_id, g in genomes:
-        net = neat.nn.FeedForwardNetwork.create(g, config)
-
-        nets.append(net)
-        player_list.append(Player())
-
-        g.fitness = 0
-        ge.append(g)
+    GEN += 1
+    WIN_ON = True
+    tempo_max = 15
+    ganharam = 0
 
     # Objetos 
     mapa = Mapa()
+
+    area = Win(738, 84, 1, 42)
 
     bola1 = Bola(235, 154, 1)
     bola2 = Bola(665, 202, 2)
     bola3 = Bola(235, 250, 3)
     bola4 = Bola(665, 298, 4)
-    lista_bolas = (bola1, bola2, bola3, bola4)
-    area = Win()
+
+    # Listas
+    bolas = [bola1, bola2, bola3, bola4]
+
+    players = []
+    nets = []
+    ge = []
+
+    for genomes_id, g in genomes:
+        net = neat.nn.FeedForwardNetwork.create(g, config)
+
+        nets.append(net)
+        players.append(Player())
+
+        g.fitness = 0
+        ge.append(g)
 
     clock = pygame.time.Clock()
     start_time = pygame.time.get_ticks()
     run = True
 
     # Main loop
-    while run and len(player_list) > 0:
+    while run and len(players) > 0:
         if WIN_ON: clock.tick(FPS)
+
+        # Tempo
+        tempo = (pygame.time.get_ticks()-start_time) / 1000
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -112,102 +111,83 @@ def main(genomes, config):
                 sys.exit()
                 break
 
-        # Tempo
-        global tempo
-        tempo = (pygame.time.get_ticks()-start_time)/1000
+        for b in bolas:
+            b.move()
 
         # NN
-        for x_c, player in enumerate(player_list):
-            player.colisao_paredes(mapa) # Colisão com as paredes
+        for x, player in enumerate(players):
 
-            # Inputs da NN: player(x, y), bolas[1-4](x, y)
-            outputs = nets[player_list.index(player)].activate( 
-                (player.getx(), player.gety(),
-                bola1.getx(), bola1.gety(),
-                bola2.getx(), bola2.gety(),
-                bola3.getx(), bola3.gety(),
-                bola4.getx(), bola4.gety())
+           # Colisões
+            player.colisaoBolas(bolas)
+            player.colisaoParedes(mapa)
+            player.colisaoWin(area)
+
+            ''' Neural Network '''
+
+            # Inputs da NN
+            outputs = nets[players.index(player)].activate( 
+                (
+                player.x, player.y,
+
+                bola1.x, bola1.y,
+                bola2.x, bola2.y,
+                bola3.x, bola3.y,
+                bola4.x, bola4.y,
+                )
             )
 
             # Movimentos baseado no output (up, down, right)
-            if max(outputs[0], outputs[1], outputs[2]) == outputs[0]:
+            if max(outputs) == outputs[0]:
                 if outputs[0] > 0.5:
                     player.move_up()
-                else:
-                    player.move_stop()
 
-            if max(outputs[0], outputs[1], outputs[2]) == outputs[1]:
+            if max(outputs) == outputs[1]:
                 if outputs[1] > 0.5:
                     player.move_down()
-                else:
-                    player.move_stop()
 
-            if max(outputs[0], outputs[1], outputs[2]) == outputs[2]:
+            if max(outputs) == outputs[2]:
                 if outputs[2] > 0.5:
                     player.move_right()
-                else:
-                    player.move_stop()
 
-            ''' NOVA GERAÇÃO '''
+            ''' Fitness '''
+
+            # Tempo máximo
+            if tempo >= tempo_max:
+                removeplayer(nets, ge, x, players, player, 0)
 
             # Colisão com as bolas
-            for bola in lista_bolas:
-                if player.player_rect.colliderect(bola.bola_rect):
-                    player.colidiu = True
-
             if player.colidiu:
-                new_gen(nets, ge, x_c, player_list, player, area, -2.75) # -2.75 de fitness
+                removeplayer(nets, ge, x, players, player, -2.5)
 
-            # A cada X gerações, aumenta o tempo de jogo em Y
-            if GEN % 15 == 0 and GEN > 0:
-                tempo_max += 4
+            # Ganhou:
+            if player.win:
+                if atw >= 10:
+                    removeplayer(nets, ge, x, players, player, 99999999)
+                else:
+                    removeplayer(nets, ge, x, players, player, 5000)
+                    ganharam += 1
+                    atw += 1
 
-            # Se exceder o tempo máximo, começa uma nova geração
-            if tempo >= tempo_max:
-                new_gen(nets, ge, x_c, player_list, player, area, 0)
-
-            # Elima players que estiverem no spawn depois de 2.5 segundos
-            if tempo >= 2.5:
-                if player.getx() <= 162 and player.gety() <= 371:
-                    new_gen(nets, ge, x_c, player_list, player, area, -5) # -5 de fitness
-
-            # Colisão com área que ganha
-            if player.player_rect.colliderect(area.win_rect):
-                ganharam += 1
-
-                # Salva o vencedor
-                save_winner(player, nets[player_list.index(player)])
-
-                new_gen(nets, ge, x_c, player_list, player, area, 9999) # 9999 fitness (para a evolução)
+            # Elimina players que estiverem no spawn depois de 3.5 segundos
+            if tempo >= 3.5:
+                if player.x <= 162 and player.y <= 371:
+                    removeplayer(nets, ge, x, players, player, -5) # -5 de fitness
                 
-        # Movimentação Bola
-        for bola in lista_bolas:
-            bola.move()  
-
-        # Display
         if WIN_ON:
-            draw_window(win, mapa, lista_bolas, player_list) # Desenha tudo
+            draw_window(win, bolas, players, area) # Desenha tudo
 
 # NOVA GERAÇÃO
-def new_gen(nets, ge, x_c, player_list, player, area, valor):
-    global bestDist
+def removeplayer(nets, ge, x, players, player, valor):
+    
+    if player in players:
 
-    # Calcula a distância da área de vitória e soma o inverso ao fitness
-    player.dist = math.sqrt( (area.getx() - player.getx())**2 + (area.gety() - player.gety())**2 )
-    ge[x_c].fitness = 1 / player.dist
+        ge[x].fitness += player.fitness +  (2500 / player.dist) + valor
 
-    # Compensa o fitness pelo valor passado para a função
-    ge[x_c].fitness += valor
-
-    # Se a distância do player for maior do que a bestDist, se torna a nova bestDist e ganha 5.5 de fitness
-    if player.dist < bestDist:
-        ge[x_c].fitness += 5.5
-        bestDist = player.dist
-
-    # Remove o player da lista
-    nets.pop(player_list.index(player))
-    ge.pop(player_list.index(player))
-    player_list.pop(player_list.index(player))
+        # Remove player do jogo
+    
+        nets.pop(players.index(player))
+        ge.pop(players.index(player))
+        players.pop(players.index(player))
 
 # NEAT
 def run(config_file):

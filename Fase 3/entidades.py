@@ -21,12 +21,15 @@ class Player:
 
         self.moeda = False
         self.colidiu = False
-        self.timeout = False
         self.win = False
 
         self.surface = pygame.image.load('img/player.png').convert_alpha()
         self.surface = pygame.transform.scale(self.surface, (self.width, self.height))
         self.rect = self.surface.get_rect(center = (self.x, self.y))
+
+    def draw(self, win):
+        self.rect = self.surface.get_rect(center = (self.x, self.y))
+        win.blit(self.surface, self.rect)
 
     def colisaoParedes(self, mapa):
         for parede in mapa.paredes:
@@ -44,10 +47,6 @@ class Player:
                 if parede.index == 'd':
                     self.x -= self.xvel
 
-    def draw(self, win):
-        self.rect = self.surface.get_rect(center = (self.x, self.y))
-        win.blit(self.surface, self.rect)
-
     def move_up(self):
         self.y -= self.yvel
 
@@ -60,41 +59,37 @@ class Player:
     def move_right(self):
         self.x += self.xvel
 
-    def getx(self):
-        return self.x
-
-    def gety(self):
-        return self.y
-
-    def colisaoBola(self, bola):
-        if self.rect.colliderect(bola.rect):
-            self.colidiu = True
+    def colisaoBolas(self, bolas):
+        for b in bolas:
+            if self.rect.colliderect(b.rect):
+                self.colidiu = True
 
     def colisaoMoeda(self, moeda):
-        if self.rect.colliderect(moeda.rect):
-            self.moeda = True
-            self.fitness = 10
+        if not self.moeda:
+            if self.rect.colliderect(moeda.rect):
+                self.moeda = True
+                self.fitness = 40
         
-    def colisaoWin(self, spawn):
-        if self.rect.colliderect(spawn.rect):
+    def colisaoWin(self, area):
+        if self.rect.colliderect(area.rect):
             if self.moeda:
                 self.win = True
 
-    def targetInfo(self, win, spawn, moeda, switch):
+    def targetInfo(self, win, area, moeda, switch):
         # Linhas
-        if self.moeda:
-            self.target = spawn
+        if not self.moeda: # Sem moeda
+            self.target = moeda
             color = GREEN
         else:
-            self.target = moeda
-            color = YELLOW
+            self.target = area
+            color = RED
         
-        pygame.draw.line(win, color, (self.getx(), self.gety()), (self.target.getx(), self.target.gety()))
+        pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y))
 
         if switch:
-            self.dist = math.sqrt ((self.getx() - self.target.getx())**2 + (self.gety() - self.target.gety())**2)
-            Xm = ((self.getx() + self.target.getx()) / 2) - 15
-            Ym = ((self.gety() + self.target.gety()) / 2) - 15
+            self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
+            Xm = ((self.x + self.target.x) / 2) - 15
+            Ym = ((self.y + self.target.y) / 2) - 15
 
             dist_text = DIST_FONT.render("d: " +  "{:.2f}".format(self.dist), 1, (0, 0, 0, 191))
             win.blit(dist_text, (Xm, Ym))
@@ -186,9 +181,3 @@ class Moeda:
 
     def draw(self, win):
         win.blit(self.surface, self.rect)
-
-    def getx(self):
-        return self.x
-
-    def gety(self):
-        return self.y

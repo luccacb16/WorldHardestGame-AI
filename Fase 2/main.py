@@ -51,7 +51,7 @@ def draw_window(win, mapa, bolas, players, moeda, area):
 	# T
 	tempo_text = GANHARAM_FONT.render("T: " + str(tempo), 1, BLACK)
 	win.blit(tempo_text, (785, 60))
-
+	'''
 	# ATW
 	atw_text = ATW_FONT.render("ATW: " + str(atw), 1, RED)
 	win.blit(atw_text, (785, 95))
@@ -63,12 +63,12 @@ def draw_window(win, mapa, bolas, players, moeda, area):
 	# M
 	vivosmoeda = []
 	for p in players:
-		if p.pegouMoeda:
+		if p.moeda:
 			vivosmoeda.append(p)
 
 	moedapegas_text = MOEDASPEGAS_FONT.render("M: " + str(len(vivosmoeda)), 1, YELLOW)
 	win.blit(moedapegas_text, (785, 290))
-
+	'''
 	pygame.display.flip()
 
 def main(genomes, config):
@@ -85,12 +85,6 @@ def main(genomes, config):
 	WIN_ON = True
 	tempo_max = 8
 	ganharam = 0
-
-	# Dá mais X segundos de jogo a cada Y gerações
-	if GEN % 15 == 0 and GEN > 0 and GEN < 180:
-		tempo_max += 2
-	if GEN >= 180:
-		tempo_max = 20
 
 	''' Objetos '''
 
@@ -158,43 +152,39 @@ def main(genomes, config):
 		for b in bolas:
 			b.move()
 
-		bola1_ind = 0
-		bola2_ind = 1
-
 		# NN
 		for x, player in enumerate(players):
 
-			for b in bolas:
-				player.colisaoBola(b)
-
+			player.colisaoBolas(bolas)
 			player.colisaoMoeda(moeda)
 			player.colisaoParedes(mapa)
 			player.colisaoWin(area)
 
-			#if tempo >= tempo_max:
-				#player.timeout = True
-
 			''' Neural Network '''
 
 			# Quais bolas vão ser fornecidas para a NN
+
+			bola1_ind = 0
+			bola2_ind = 1
+
 			if len(players) > 0:
 				for i in range(12):
-					if player.getx() >= 716:
+					if player.x >= 716:
 						bola1_ind = 11
 						bola2_ind = 11
-					elif player.getx() >= bolas[i].getx() and player.getx() <= bolas[i+1].getx():
+					elif player.x >= bolas[i].x and player.x <= bolas[i+1].x:
 						bola1_ind = i
 						bola2_ind = i + 1
 
 			# Inputs da NN
 			outputs = nets[players.index(player)].activate( 
 				( 
-				player.getx(), player.gety(), # Posição do player
+				player.x, player.y, # Posição do player
 
-				abs(player.target.getx() - player.getx()), abs(player.target.gety() - player.gety()), # Distância do player ao target
+				player.target.x, player.target.y, # Distância do player ao target
 
-				abs(bolas[bola1_ind].getx() - player.getx()), abs(bolas[bola1_ind].gety() - player.gety()), # Distância do player à bola mais perto 1
-				abs(bolas[bola2_ind].getx() - player.getx()), abs(bolas[bola2_ind].gety() - player.gety()) # Distância do player à bola mais perto 2
+				bolas[bola1_ind].x, bolas[bola1_ind].y, # Bola mais perto da esquerda
+				bolas[bola2_ind].x, bolas[bola2_ind].y # Distância do player à bola mais perto 2
 				)
 			)
 
@@ -213,39 +203,31 @@ def main(genomes, config):
 
 			''' Fitness '''
 
-			# Timeout
-			if player.timeout:
-				if player in players:
-					removeplayer(nets, ge, x, players, player, 0)
+			# Começa nova geração quando o tempo acaba
+			if tempo >= tempo_max:
+				removeplayer(nets, ge, x, players, player, 0)
 
 			# Colisão com as bolas	
 			if player.colidiu:
-				if player in players:
-					removeplayer(nets, ge, x, players, player, -5)
+				removeplayer(nets, ge, x, players, player, -5)
 
 			# Passar da moeda sem pegar
-			if player.getx() >= moeda.getx() and not player.pegouMoeda:
-				if player in players:
-					removeplayer(nets, ge, x, players, player, -10)
+			if player.x >= moeda.x and not player.moeda:
+				removeplayer(nets, ge, x, players, player, -10)
 
 			# Ganhou
 			if player.win:
-				if atw >= 3:
-					if player in players:
-						removeplayer(nets, ge, x, players, player, 99999999)
+				if atw >= 15:
+					removeplayer(nets, ge, x, players, player, 99999999)
 				else:
+					removeplayer(nets, ge, x, players, player, 5000)
 					ganharam += 1
 					atw += 1
 
-					print("Ganhou!")
-					if player in players:
-						removeplayer(nets, ge, x, players, player, 1000)
-
 			# Por tempo e posição
 			if tempo >= 2.5:
-				if player in players:
-					if player.getx() <= 186: # Dentro do spawn
-						removeplayer(nets, ge, x, players, player, -15)
+				if player.x <= 186: # Dentro do spawn
+					removeplayer(nets, ge, x, players, player, -15)
 
 		# Display
 		if WIN_ON:
@@ -274,7 +256,7 @@ def run(config_file):
 
 	winner = p.run(main, 9999)
 
-	with open('winner13_06', 'wb') as f:
+	with open('winner.pickle', 'wb') as f:
 		pickle.dump(winner, f)
 
 	print('\nBest genome:\n{!s}'.format(winner))
