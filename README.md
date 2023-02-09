@@ -6,7 +6,7 @@
 ##### Clipes da execução podem ser vistos em https://twitch.tv/cuccalouto
 
 ### Fase 1
-![image](https://user-images.githubusercontent.com/103335009/217911435-66ea3fa9-4609-4898-a44b-3c483840dece.png)
+![image](https://user-images.githubusercontent.com/103335009/217912371-83dce0fd-8b93-469d-a981-0e95e45b88a6.png)
 
 ### Fase 2
 ![image](https://user-images.githubusercontent.com/103335009/217910995-3006c28b-23b8-46ff-a2bb-1993ef36fa82.png)
