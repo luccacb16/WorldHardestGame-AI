@@ -91,8 +91,8 @@ class Player:
 
 		# Escreve as distâncias
 		if switch:
-			Xm = (self.x + self.target.x / 2) - 15
-			Ym = (self.y + self.target.y / 2) - 15
+			Xm = ((self.x + self.target.x) / 2) - 15
+			Ym = ((self.y + self.target.y) / 2) - 15
 
 			dist_text = DIST_FONT.render("d: " + "{:.2f}".format(self.dist), 1, (0, 0, 0, 191))
 			win.blit(dist_text, (Xm, Ym))
