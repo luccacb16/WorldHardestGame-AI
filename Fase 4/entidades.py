@@ -45,7 +45,6 @@ class Player:
     def colisaoParedes(self, mapa):
         for parede in mapa.paredes:
             if self.rect.colliderect(parede.rect):
-
                 self.colidiuP = True
 
     def colisaoBolas(self, bolas):

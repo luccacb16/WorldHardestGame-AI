@@ -36,10 +36,12 @@ def draw_window(win, bolas, moedas, players, area):
 
     for p in players:
         if p in players:
-            p.targetInfo(win, area, moedas, False)
+            p.targetInfo(win, area, moedas, True)
             p.draw(win)
 
-    # Textos
+    ''' Textos '''
+
+    # ESQUERDA
 
 	# GEN
     gen_text = GEN_FONT.render("Gen: " + str(GEN-1), 1, BLACK)
@@ -48,7 +50,7 @@ def draw_window(win, bolas, moedas, players, area):
 	# Vivos:
     vivos_text = VIVOS_FONT.render("Vivos: " + str(len(players)), 1, BLACK)
     win.blit(vivos_text, (30, 60))
-    '''
+    
 	# DIREITA
 
 	# T
@@ -63,27 +65,6 @@ def draw_window(win, bolas, moedas, players, area):
     atw_text = ATW_FONT.render("ATW: " + str(atw), 1, RED)
     win.blit(atw_text, ((WIDTH-150, 120)))
 
-	# M
-    vivosmoeda1 = []
-    vivosmoeda2 = []
-    vivosmoeda3 = []
-    for p in players:
-        if p.moeda1:
-            vivosmoeda1.append(p)
-        if p.moeda2:
-            vivosmoeda2.append(p)
-        if p.moeda3:
-            vivosmoeda3.append(p) 
-
-    moeda1_text = MOEDASPEGAS_FONT.render("M1: " + str(len(vivosmoeda1)), 1, YELLOW)
-    win.blit(moeda1_text, (30, 120))
-
-    moeda2_text = MOEDASPEGAS_FONT.render("M2: " + str(len(vivosmoeda2)), 1, YELLOW)
-    win.blit(moeda2_text, (30, 155))
-
-    moeda3_text = MOEDASPEGAS_FONT.render("M3: " + str(len(vivosmoeda3)), 1, YELLOW)
-    win.blit(moeda3_text, (30, 190))
-    '''
     pygame.display.flip()
 
 # -------------------------------------------------------------------------------------------------------

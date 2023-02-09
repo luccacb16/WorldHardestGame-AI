@@ -2,7 +2,6 @@ import pygame
 import sys
 import neat
 import os
-import pickle
 import math
 
 from constantes import *
@@ -34,12 +33,12 @@ def draw_window(win, bolas, moeda, players, area):
 	
 	for p in players:
 		if p in players:
-			p.targetInfo(win, area, moeda, False)
+			p.targetInfo(win, area, moeda, True)
 			p.draw(win)
 			
 	moeda.draw(win)
 
-	# Textos
+	''' Textos '''
 
 	# ESQUERDA
 
@@ -56,7 +55,7 @@ def draw_window(win, bolas, moeda, players, area):
 	# T
 	tempo_text = TEMPO_FONT.render("T: " + str(tempo), 1, BLACK)
 	win.blit(tempo_text, (WIDTH-120, 30))
-	'''
+	
 	# W
 	ganharam_text = TEMPO_FONT.render("W: " + str(ganharam), 1, BLACK)
 	win.blit(ganharam_text, (WIDTH-120, 75))
@@ -64,16 +63,7 @@ def draw_window(win, bolas, moeda, players, area):
 	# ATW
 	atw_text = ATW_FONT.render("ATW: " + str(atw), 1, RED)
 	win.blit(atw_text, ((WIDTH-120, 120)))
-
-	# M
-	vivosmoeda = []
-	for p in players:
-		if p.moeda:
-			vivosmoeda.append(p)
-
-	moedas_text = MOEDASPEGAS_FONT.render("M: " + str(len(vivosmoeda)), 1, YELLOW)
-	win.blit(moedas_text, ((WIDTH-120), 165))
-	'''
+	
 	pygame.display.flip()
 
 # -------------------------------------------------------------------------------------------------------

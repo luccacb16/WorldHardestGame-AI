@@ -26,7 +26,6 @@ atw = 0
 def draw_window(win, mapa, bolas, players, moeda, area):
 	win.fill(FUNDO)
 	win.blit(mapa_surface, mapa_rect)
-	pygame.draw.line(win, RED, (area.getx(), area.gety()-11), (area.getx(), area.gety()+11), width = 2)
 
 	for b in bolas:
 		b.draw(win)
@@ -35,10 +34,12 @@ def draw_window(win, mapa, bolas, players, moeda, area):
 
 	for p in players:
 		if p in players:
-			p.targetInfo(win, area, moeda, False)
+			p.targetInfo(win, area, moeda, True)
 			p.draw(win)
 
-	# Textos
+	''' Textos '''
+
+	# ESQUERDA
 
 	# GEN
 	score_label = STAT_FONT.render("Gen: " + str(GEN-1), 1, BLACK)
@@ -48,10 +49,12 @@ def draw_window(win, mapa, bolas, players, moeda, area):
 	vivos = VIVOS_FONT.render("Vivos: " + str(len(players)), 1, BLACK)
 	win.blit(vivos, (45, 75))
 
+	# DIREITA
+
 	# T
 	tempo_text = GANHARAM_FONT.render("T: " + str(tempo), 1, BLACK)
 	win.blit(tempo_text, (785, 60))
-	'''
+	
 	# ATW
 	atw_text = ATW_FONT.render("ATW: " + str(atw), 1, RED)
 	win.blit(atw_text, (785, 95))
@@ -59,16 +62,7 @@ def draw_window(win, mapa, bolas, players, moeda, area):
 	# W
 	contador_ganharam = GANHARAM_FONT.render("W: " + str(ganharam), 1, BLACK)
 	win.blit(contador_ganharam, (785, 255))
-
-	# M
-	vivosmoeda = []
-	for p in players:
-		if p.moeda:
-			vivosmoeda.append(p)
-
-	moedapegas_text = MOEDASPEGAS_FONT.render("M: " + str(len(vivosmoeda)), 1, YELLOW)
-	win.blit(moedapegas_text, (785, 290))
-	'''
+	
 	pygame.display.flip()
 
 def main(genomes, config):

@@ -35,7 +35,11 @@ def draw_window(win, bolas, players, area):
             p.draw(win)
             p.targetInfo(win, area, False)
 
-    # Gerações
+    ''' Textos '''
+
+    # ESQUERDA
+
+    # GEN
     score_label = STAT_FONT.render("Gen: " + str(GEN-1), 1, BLACK)
     win.blit(score_label, (30, 10))
 
@@ -43,13 +47,19 @@ def draw_window(win, bolas, players, area):
     vivos = VIVOS_FONT.render("Vivos: " + str(len(players)), 1, BLACK)
     win.blit(vivos, (30, 40))
 
+    # DIREITA
+
+    # ATW
+    atw_text = ATW_FONT.render("ATW: " + str(atw), 1, RED)
+    win.blit(atw_text, ((WIDTH-260, 40)))
+
     # Ganharam
     contador_ganharam = GANHARAM_FONT.render("W: " + str(ganharam), 1, BLACK)
-    win.blit(contador_ganharam, (WIDTH-70, 40))
+    win.blit(contador_ganharam, (WIDTH-170, 40))
 
     # Tempo
     tempo_text = TEMPO_FONT.render("T: " + str(tempo), 1, BLACK)
-    win.blit(tempo_text, (WIDTH-170, 40))
+    win.blit(tempo_text, (WIDTH-110, 40))
 
     pygame.display.flip()
 
