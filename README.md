@@ -2,7 +2,7 @@
 * **AI**: Biblioteca neat-python
 * **Jogo**: Biblioteca pygame
 
-##### Fases 1-4 disponíveis, no entanto, apenas nas fases 1 e 2 a AI vence (trabalhando para que ganhe em todas!)
+##### Fases 1-4 disponíveis, no entanto, a IA só não vence ainda a Fase 3 (trabalhando para que ganhe em todas!)
 ##### Clipes da execução podem ser vistos em https://twitch.tv/cuccalouto
 
 ### Fase 1
