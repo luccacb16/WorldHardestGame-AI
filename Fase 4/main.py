@@ -14,7 +14,7 @@ from mapa import *
 pygame.init()
 pygame.display.init()
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jogo mais Difícil do Mundo! (Fase 3)")
+pygame.display.set_caption("Jogo mais Difícil do Mundo! (Fase 4)")
 
 mapa_surface = pygame.image.load('img/mapa.png').convert_alpha()
 mapa_rect = mapa_surface.get_rect(center = (WIDTH//2, HEIGHT//2))
