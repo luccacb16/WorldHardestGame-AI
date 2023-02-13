@@ -31,9 +31,6 @@ class Parede:
         self.surface = pygame.Surface((self.width, self.height))
         self.rect = self.surface.get_rect(topleft = (self.x, self.y))
 
-    def draw(self, win):
-        win.blit(self.surface, self.rect)
-
 class Mapa:
     def __init__(self):
         #self.parede = Parede(x, y, width, height, index)
