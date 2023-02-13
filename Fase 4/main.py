@@ -197,10 +197,10 @@ def main(genomes, config):
 
 				player.x, player.y, # Posição do player
 
-                bolaperto.x, bolaperto.y, # Bola mais próxima
-                paredeperto.x, paredeperto.y, # Parede mais próxima
+                (bolaperto.x - player.x), (bolaperto.y - player.y), # Bola mais próxima
+                (paredeperto.x - player.x), (paredeperto.y - player.y), # Parede mais próxima
 
-                player.target.x, player.target.y, # Target
+                (player.target.x - player.x), (player.target.y, - player.y) # Target
                 )
 			)
 
@@ -237,7 +237,7 @@ def main(genomes, config):
 
             # Player vence
             if player.win:
-                if atw >= 5:
+                if atw >= 10:
                     removeplayer(nets, ge, x, players, player, 99999999)
                 else:
                     removeplayer(nets, ge, x, players, player, 5000)
