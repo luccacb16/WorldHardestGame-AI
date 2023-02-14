@@ -200,7 +200,7 @@ def main(genomes, config):
                 (bolaperto.x - player.x), (bolaperto.y - player.y), # Bola mais próxima
                 (paredeperto.x - player.x), (paredeperto.y - player.y), # Parede mais próxima
 
-                (player.target.x - player.x), (player.target.y, - player.y) # Target
+                (player.target.x - player.x), (player.target.y - player.y) # Target
                 )
 			)
 
