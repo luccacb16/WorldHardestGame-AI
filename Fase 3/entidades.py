@@ -85,9 +85,10 @@ class Player:
             color = RED
         
         pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y))
-
+        
+        self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
+        
         if switch:
-            self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
             Xm = ((self.x + self.target.x) / 2) - 15
             Ym = ((self.y + self.target.y) / 2) - 15
 
