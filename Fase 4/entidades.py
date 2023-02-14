@@ -10,8 +10,8 @@ class Player:
     def __init__(self):
         self.x = 501
         self.y = 129
-        self.xvel = 4
-        self.yvel = 4
+        self.xvel = 4.5
+        self.yvel = 4.5
 
         self.target = self
         self.dist = 999999
