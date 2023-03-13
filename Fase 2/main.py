@@ -75,7 +75,7 @@ def main(genomes, config):
 
 	GEN += 1
 	WIN_ON = True
-	tempo_max = 8
+	tempo_max = 12
 	ganharam = 0
 
 	''' Objetos '''
@@ -173,7 +173,7 @@ def main(genomes, config):
 				( 
 				player.x, player.y, # Posição do player
 
-				player.target.x, player.target.y, # Distância do player ao target
+				(player.target.x - player.x), (player.target.y - player.y), # Distância do player ao target
 
 				bolas[bola1_ind].x, bolas[bola1_ind].y, # Bola mais perto da esquerda
 				bolas[bola2_ind].x, bolas[bola2_ind].y # Distância do player à bola mais perto 2
@@ -209,7 +209,7 @@ def main(genomes, config):
 
 			# Ganhou
 			if player.win:
-				if atw >= 15:
+				if atw >= 30:
 					removeplayer(nets, ge, x, players, player, 99999999)
 				else:
 					removeplayer(nets, ge, x, players, player, 5000)

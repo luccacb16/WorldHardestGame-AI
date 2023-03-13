@@ -77,7 +77,7 @@ def main(genomes, config):
 
     GEN += 1
     WIN_ON = True
-    tempo_max = 25
+    tempo_max = 12
     ganharam = 0
 
     ''' Objetos '''

@@ -84,10 +84,10 @@ class Player:
 			self.target = area
 			color = BLUE
         
-        self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
+		self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
 		
         # Desenha as linhas
-        if lines:
+		if lines:
 			pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y), 2)
 
 		# Escreve as distâncias

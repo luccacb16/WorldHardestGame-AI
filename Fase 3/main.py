@@ -79,7 +79,7 @@ def main(genomes, config):
 
 	GEN += 1
 	WIN_ON = True
-	tempo_max = 10
+	tempo_max = 12
 	ganharam = 0
 
 	# Objetos
@@ -155,7 +155,7 @@ def main(genomes, config):
 			outputs = nets[players.index(player)].activate( 
 				(
 				player.x, player.y,
-				player.target.x, player.target.y,
+				(player.target.x - player.x), (player.target.y - player.y),
 
 				bola1.x, bola1.y,
 				bola11.x, bola11.y,
@@ -191,7 +191,7 @@ def main(genomes, config):
 
 			# Ganhou:
 			if player.win:
-				if atw >= 10:
+				if atw >= 30:
 					removeplayer(nets, ge, x, players, player, 99999999)
 				else:
 					removeplayer(nets, ge, x, players, player, 5000)
