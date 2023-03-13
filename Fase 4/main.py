@@ -2,9 +2,7 @@ import pygame
 import sys
 import neat
 import os
-import pickle
 import math
-import numpy as np
 
 from constantes import *
 from entidades import *
@@ -36,7 +34,7 @@ def draw_window(win, bolas, moedas, players, area):
 
     for p in players:
         if p in players:
-            p.targetInfo(win, area, moedas, True)
+            p.targetInfo(win, area, moedas, lines=True, dist=True)
             p.draw(win)
 
     ''' Textos '''
@@ -237,7 +235,7 @@ def main(genomes, config):
 
             # Player vence
             if player.win:
-                if atw >= 10:
+                if atw >= 30:
                     removeplayer(nets, ge, x, players, player, 99999999)
                 else:
                     removeplayer(nets, ge, x, players, player, 5000)
@@ -278,9 +276,6 @@ def run(config_file):
     p.add_reporter(stats)
 
     winner = p.run(main, 9999999)
-
-    with open('winner', 'wb') as f:
-        pickle.dump(winner, f)
 
     print('\nBest genome:\n{!s}'.format(winner))
 

@@ -2,8 +2,6 @@ import pygame
 import sys
 import neat
 import os
-import pickle
-import math
 
 from constantes import *
 from entidades import *
@@ -33,7 +31,7 @@ def draw_window(win, bolas, players, area):
     for p in players:
         if p in players:
             p.draw(win)
-            p.targetInfo(win, area, True)
+            p.targetInfo(win, area, lines=True, dist=True)
 
     ''' Textos '''
 

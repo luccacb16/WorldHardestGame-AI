@@ -9,8 +9,8 @@ class Player:
     def __init__(self):
         self.x = 300
         self.y = 334
-        self.xvel = 4
-        self.yvel = 4
+        self.xvel = 4.25
+        self.yvel = 4.25
 
         self.width = 35
         self.height = 35
@@ -75,7 +75,7 @@ class Player:
             if self.moeda:
                 self.win = True
 
-    def targetInfo(self, win, area, moeda, switch):
+    def targetInfo(self, win, area, moeda, lines=False, dist=False):
         # Linhas
         if not self.moeda: # Sem moeda
             self.target = moeda
@@ -84,11 +84,12 @@ class Player:
             self.target = area
             color = RED
         
-        pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y))
-        
         self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
-        
-        if switch:
+
+        if lines:
+            pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y))
+
+        if dist:
             Xm = ((self.x + self.target.x) / 2) - 15
             Ym = ((self.y + self.target.y) / 2) - 15
 

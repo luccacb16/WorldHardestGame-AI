@@ -8,8 +8,8 @@ class Player:
     def __init__(self):
         self.x = 75
         self.y = 146
-        self.xvel = 4
-        self.yvel = 4
+        self.xvel = 4.25
+        self.yvel = 4.25
 
         self.width = 30
         self.height = 30
@@ -66,14 +66,15 @@ class Player:
         if self.rect.colliderect(area.rect):
             self.win = True
 
-    def targetInfo(self, win, area, switch):
+    def targetInfo(self, win, area, lines=False, dist=False):
         self.target = area
-
-        pygame.draw.line(win, RED, (self.x, self.y), (self.target.x, self.target.y))
 
         self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
 
-        if switch:
+        if lines:
+            pygame.draw.line(win, RED, (self.x, self.y), (self.target.x, self.target.y))
+
+        if dist:
             Xm = ((self.x + self.target.x) / 2) - 15
             Ym = ((self.y + self.target.y) / 2) - 15
 
