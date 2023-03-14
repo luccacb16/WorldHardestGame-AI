@@ -246,7 +246,7 @@ def run(config_file):
 	stats = neat.StatisticsReporter()
 	p.add_reporter(stats)
 
-	winner = p.run(main, 9999)
+	winner = p.run(main, 150)
 
 	print('\nBest genome:\n{!s}'.format(winner))
 
