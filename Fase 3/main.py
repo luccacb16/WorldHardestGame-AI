@@ -32,7 +32,7 @@ def draw_window(win, bolas, moeda, players, area):
 	
 	for p in players:
 		if p in players:
-			p.targetInfo(win, area, moeda, lines=True, dist=True)
+			p.targetInfo(win, area, moeda, lines=True, dist=False)
 			p.draw(win)
 			
 	moeda.draw(win)

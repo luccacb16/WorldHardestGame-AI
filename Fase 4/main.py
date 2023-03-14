@@ -34,7 +34,7 @@ def draw_window(win, bolas, moedas, players, area):
 
     for p in players:
         if p in players:
-            p.targetInfo(win, area, moedas, lines=True, dist=True)
+            p.targetInfo(win, area, moedas, lines=True, dist=False)
             p.draw(win)
 
     ''' Textos '''
