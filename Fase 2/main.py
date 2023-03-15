@@ -75,8 +75,10 @@ def main(genomes, config):
 
 	GEN += 1
 	WIN_ON = True
-	tempo_max = 12
 	ganharam = 0
+
+	if GEN % 15 == 0 and tempo_max <= 21:
+		tempo_max += 3
 
 	''' Objetos '''
 

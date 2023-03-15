@@ -1,5 +1,8 @@
 import pygame
 
+global tempo_max
+tempo_max = 12
+
 WIDTH = 950
 HEIGHT = 375
 
