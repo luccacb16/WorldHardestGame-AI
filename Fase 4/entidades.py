@@ -26,6 +26,12 @@ class Player:
         self.surface = pygame.transform.scale(self.surface, (37, 37))
         self.rect = self.surface.get_rect(center = (self.x, self.y))
 
+    def getx(self):
+        return self.x
+    
+    def gety(self):
+        return self.y
+
     def draw(self, win):
         self.rect = self.surface.get_rect(center = (self.x, self.y))
         win.blit(self.surface, self.rect)
@@ -81,17 +87,17 @@ class Player:
             self.target = area
             color = RED
         
-        self.dist = math.dist([self.x, self.y], [self.target.x, self.target.y])
+        self.dist = math.dist([self.x, self.y], [self.target.getx(), self.target.gety()])
         
         # Linhas e Distância na tela
 
         if lines:
-            pygame.draw.line(win, color, (self.x, self.y), (self.target.x, self.target.y), 2)
+            pygame.draw.line(win, color, (self.x, self.y), (self.target.getx(), self.target.gety()), 2)
 
         if dist:
 
-            Xm = ((self.x + self.target.x) / 2) - 15
-            Ym = ((self.y + self.target.y) / 2) - 15
+            Xm = ((self.x + self.target.getx()) / 2) - 15
+            Ym = ((self.y + self.target.gety()) / 2) - 15
 
             dist_text = DIST_FONT.render("d: " +  "{:.2f}".format(self.dist), 1, (0, 0, 0, 191))
             win.blit(dist_text, (Xm, Ym))
@@ -132,3 +138,9 @@ class Moeda:
 
     def draw(self, win):
         win.blit(self.surface, self.rect)
+
+    def getx(self):
+        return self.x
+    
+    def gety(self):
+        return self.y

@@ -241,6 +241,13 @@ def run(config_file):
 
 # Config file path
 if __name__ == '__main__':
-	local_dir = os.path.dirname(__file__)
-	config_path = os.path.join(local_dir, 'config-feedforward.txt')
-	run(config_path)
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, 'config-feedforward.txt')
+    run(config_path)
+    
+    # Rodar a próxima fase
+    file = "main.py"
+    DIR = "../Fase 4/"
+
+    os.chdir(DIR)
+    os.system(f'python -u "{file}"')

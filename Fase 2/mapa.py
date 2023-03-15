@@ -3,14 +3,20 @@ from constantes import *
 
 # MAPA
 class Win:
-	def __init__(self):
-		self.x = 763
-		self.y = 142
-		self.width = 1
-		self.height = 90
+    def __init__(self):
+        self.x = 763
+        self.y = 142
+        self.width = 1
+        self.height = 90
 
-		self.surface = pygame.Surface((self.width, self.height))
-		self.rect = self.surface.get_rect(topleft = (self.x, self.y))
+        self.surface = pygame.Surface((self.width, self.height))
+        self.rect = self.surface.get_rect(topleft = (self.x, self.y))
+
+    def getx(self):
+        return self.x
+
+    def gety(self):
+	    return self.y + 45
 
 class Parede:
 	def __init__(self, x, y, width, height, index):
