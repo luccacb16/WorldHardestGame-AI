@@ -9,8 +9,8 @@ class Player:
     def __init__(self):
         self.x = 118
         self.y = 185
-        self.xvel = 4.25
-        self.yvel = 4.25
+        self.xvel = 4
+        self.yvel = 4
 
         self.width = 30
         self.height = 30
